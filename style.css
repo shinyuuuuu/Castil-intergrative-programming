@@ -1,0 +1,56 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-image: url("assets/images/background-image.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  background-color: #000;
+  color: #333;
+}
+
+header {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  background-color: rgba(51, 51, 51, 0.85);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.headers h1 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.hero-section {
+  padding: 40px 20px;
+}
+
+.container {
+  text-align: center;
+  width: 80%;
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(218, 165, 32, 0.85);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.front-image {
+  display: block;
+  margin: 20px auto;
+  max-width: 80%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.hero {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 20px;
+  line-height: 1.6;
+}
