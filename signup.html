@@ -1,39 +1,48 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up | Bohol Rides</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up | Bohol Rides</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-  <body>
-    <header class="headers">
-      <h1>Bohol Rides</h1>
-    </header>
+<body>
+  <header class="headers">
+    <h1>Bohol Rides</h1>
+  </header>
 
-    <section class="page-content">
-      <div class="auth-card">
-        <h2>Create Account</h2>
+  <section class="page-content">
+    <div class="auth-card">
+      <h2>Create Account</h2>
 
-        <form class="auth-form">
-          <label>Full Name</label>
-          <input type="text" required />
+      <form class="auth-form">
+        <label>Full Name</label>
+        <input type="text" required />
 
-          <label>Email</label>
-          <input type="email" required />
+        <label>Email</label>
+        <input type="email" required />
 
-          <label>Password</label>
-          <input type="password" required />
+        <label>Password</label>
+        <input type="password" required />
 
-          <button class="cta-button">Sign Up</button>
-        </form>
+        <label>Confirm Password</label>
+        <input type="password" required />
 
-        <p>
-          Already have an account?
-          <a href="login.html">Login here</a>
-        </p>
+        <a href="profile.html" class="cta-button">Sign Up</a>
+      </form>
+
+      <!-- Clear navigation -->
+      <div class="auth-nav">
+        <a href="index.html">Home</a>
+        <a href="login.html">Back to Login</a>
       </div>
-    </section>
-  </body>
+
+      <p>
+        Already have an account?
+        <a href="login.html">Login here</a>
+      </p>
+    </div>
+  </section>
+</body>
 </html>
