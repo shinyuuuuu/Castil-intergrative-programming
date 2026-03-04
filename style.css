@@ -72,9 +72,9 @@ header.headers a {
 }
 
 .hero-content {
-  max-width: 450px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 25px;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 35px;
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -83,7 +83,7 @@ header.headers a {
 .cta-button {
   display: inline-block;
   margin-top: 15px;
-  padding: 12px 28px;
+  padding: 14px 32px;
   background: #333;
   color: white;
   border-radius: 25px;
@@ -111,8 +111,8 @@ header.headers a {
 
 .card {
   background: white;
-  padding: 20px;
-  width: 260px;
+  padding: 25px;
+  width: 280px;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
@@ -122,22 +122,24 @@ header.headers a {
   padding-top: 140px;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 }
 
 .auth-card {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 45px 35px;
   border-radius: 15px;
-  width: 420px;
+  width: 100%;
+  max-width: 550px; /* bigger than before */
   text-align: center;
+  box-sizing: border-box;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px; /* more space between inputs */
 }
 
 .auth-form label {
@@ -146,9 +148,12 @@ header.headers a {
 }
 
 .auth-form input {
-  padding: 10px;
+  padding: 14px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
 }
 
 /* DASHBOARD */
@@ -157,6 +162,8 @@ header.headers a {
   gap: 20px;
   width: 100%;
   max-width: 1000px;
+  margin: auto;
+  flex-wrap: wrap;
 }
 
 .sidebar {
@@ -189,15 +196,15 @@ header.headers a {
 
 .dashboard-content {
   flex: 1;
-  background: rgba(255,255,255,0.9);
-  padding: 30px;
+  background: rgba(255,255,255,0.95);
+  padding: 35px;
   border-radius: 15px;
 }
 
 .profile-card,
 .settings-card {
   background: white;
-  padding: 20px;
+  padding: 25px;
   border-radius: 10px;
 }
 
@@ -208,4 +215,44 @@ header.headers a {
   text-align: center;
   padding: 30px;
   border-radius: 30px 30px 0 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .auth-card {
+    max-width: 90%;
+    padding: 30px 20px;
+  }
+
+  .hero-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .content-cards {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+}
+
+/* DARK MODE */
+body.dark {
+  background-color: #111;
+  color: #eee;
+}
+
+body.dark .dashboard-content,
+body.dark .auth-card,
+body.dark .hero-content,
+body.dark .card {
+  background: #222;
+  color: #eee;
 }

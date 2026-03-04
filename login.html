@@ -6,7 +6,6 @@
   <title>Login | Bohol Rides</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <header class="headers">
     <h1>Bohol Rides</h1>
@@ -16,17 +15,16 @@
     <div class="auth-card">
       <h2>Login</h2>
 
-      <form class="auth-form">
+      <form id="loginForm" class="auth-form">
         <label>Email</label>
         <input type="email" required />
 
         <label>Password</label>
         <input type="password" required />
 
-        <a href="profile.html" class="cta-button">Login</a>
+        <button type="submit" class="cta-button">Login</button>
       </form>
 
-      <!-- Only Home button -->
       <div class="auth-nav">
         <a href="index.html">Home</a>
       </div>
@@ -37,5 +35,7 @@
       </p>
     </div>
   </section>
+
+  <script src="script.js"></script>
 </body>
 </html>
