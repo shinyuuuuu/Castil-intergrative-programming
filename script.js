@@ -19,8 +19,23 @@ if (loginForm) {
       return;
     }
 
+    // Save user role: admin or user
+    let userRole = "user"; // default
+
+    // Example: hardcoded admin account
+    if (email === "admin@email.com" && password === "admin123") {
+      userRole = "admin";
+    }
+
     localStorage.setItem("loggedIn", "true");
-    window.location.href = "profile.html";
+    localStorage.setItem("userRole", userRole);
+
+    // Redirect based on role
+    if (userRole === "admin") {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "profile.html";
+    }
   });
 }
 
@@ -77,4 +92,65 @@ if (toggle) {
   toggle.addEventListener("change", function () {
     document.body.classList.toggle("dark");
   });
+}
+
+// ADMIN ACCESS PROTECTION
+if (
+  document.title.includes("Admin") ||
+  document.title.includes("Manage Users")
+) {
+  if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+  } else if (localStorage.getItem("userRole") !== "admin") {
+    // Normal users cannot access admin pages
+    alert("Access denied. Admins only.");
+    window.location.href = "profile.html";
+  }
+}
+
+function deleteRow(button) {
+  const row = button.parentElement.parentElement;
+  row.remove();
+}
+
+const addUserForm = document.getElementById("addUserForm");
+
+if (addUserForm) {
+  addUserForm.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const name = document.getElementById("newName").value;
+    const email = document.getElementById("newEmail").value;
+
+    const table = document.getElementById("userTable");
+
+    const row = table.insertRow();
+
+    row.insertCell(0).innerText = table.rows.length - 1;
+    row.insertCell(1).innerText = name;
+    row.insertCell(2).innerText = email;
+
+    const actionCell = row.insertCell(3);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerText = "Delete";
+
+    deleteBtn.onclick = function(){
+      row.remove();
+    };
+
+    actionCell.appendChild(deleteBtn);
+
+    addUserForm.reset();
+
+  });
+}
+
+// DYNAMIC ADMIN LINK IN NAVIGATION
+const adminLinkContainer = document.getElementById("adminLinkContainer");
+const userRole = localStorage.getItem("userRole");
+
+if (adminLinkContainer && userRole === "admin") {
+  adminLinkContainer.innerHTML = '<a href="admin.html">Admin Dashboard</a>';
 }
