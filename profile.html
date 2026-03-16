@@ -18,8 +18,9 @@
         <h3>Navigation</h3>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="#" id="logoutBtn">Logout</a></li>
+          <li><a href="weather.html">🌤 Weather</a></li>
           <li><a href="settings.html">Settings</a></li>
+          <li><a href="#" id="logoutBtn">Logout</a></li>
         </ul>
       </aside>
 
@@ -27,7 +28,13 @@
         <h2>User Profile</h2>
 
         <div class="profile-card">
-          <img src="assets/images/avatar.png" alt="Profile Avatar" class="avatar" />
+          <!-- FIX: added onerror fallback -->
+          <img
+            src="assets/images/avatar.png"
+            alt="Profile Avatar"
+            class="avatar"
+            onerror="this.style.display='none'"
+          />
           <p><strong>Full Name:</strong> Juan Dela Cruz</p>
           <p><strong>Email:</strong> juan.delacruz@email.com</p>
           <p><strong>Address:</strong> Tagbilaran City, Bohol</p>
@@ -42,6 +49,7 @@
         </div>
 
         <a href="settings.html" class="cta-button">Go to Settings</a>
+        <a href="weather.html" class="cta-button" style="margin-left:10px;">Check Weather</a>
       </main>
 
     </div>

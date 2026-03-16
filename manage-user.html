@@ -20,7 +20,7 @@
 <h3>Admin Menu</h3>
 <ul>
 <li><a href="admin.html">Dashboard</a></li>
-<li><a href="manage-users.html">Manage Users</a></li>
+<li><a href="manage-user.html">Manage Users</a></li> <!-- FIX: was manage-users.html -->
 <li><a href="profile.html">Back to Profile</a></li>
 <li><a href="#" id="logoutBtn">Logout</a></li>
 </ul>
@@ -35,6 +35,7 @@
 <th>ID</th>
 <th>Name</th>
 <th>Email</th>
+<th>Role</th> <!-- FIX: added Role column -->
 <th>Action</th>
 </tr>
 
@@ -42,6 +43,7 @@
 <td>1</td>
 <td>Ana</td>
 <td>ana@email.com</td>
+<td>user</td>
 <td><button onclick="deleteRow(this)">Delete</button></td>
 </tr>
 
@@ -49,6 +51,7 @@
 <td>2</td>
 <td>Juan</td>
 <td>juan@email.com</td>
+<td>user</td>
 <td><button onclick="deleteRow(this)">Delete</button></td>
 </tr>
 
