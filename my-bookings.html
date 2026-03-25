@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Bookings | Bohol Rides</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .bookings-wrapper {
+      padding-top: 120px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 60px;
+    }
+
+    .bookings-container {
+      width: 100%;
+      max-width: 750px;
+      padding: 0 20px;
+    }
+
+    .bookings-heading {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .bookings-heading h2 {
+      color: white;
+      font-size: 32px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      margin-bottom: 6px;
+    }
+
+    .bookings-heading p {
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+    }
+
+    /* Top row actions */
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .top-row .count-label {
+      color: rgba(255,255,255,0.85);
+      font-size: 13px;
+    }
+
+    .top-row-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .clear-all-btn {
+      padding: 8px 18px;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 25px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .clear-all-btn:hover {
+      background: rgba(255,80,80,0.5);
+      border-color: rgba(255,80,80,0.7);
+    }
+
+    /* Booking cards */
+    .bookings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .booking-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      overflow: hidden;
+      border-left: 6px solid #333;
+    }
+
+    .booking-card.status-confirmed {
+      border-left-color: #1a6e3c;
+    }
+
+    .booking-card.status-cancelled {
+      border-left-color: #c0392b;
+      opacity: 0.75;
+    }
+
+    .booking-card-body {
+      padding: 20px 24px 16px;
+    }
+
+    .booking-route {
+      font-size: 17px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .booking-route .route-text {
+      flex: 1;
+    }
+
+    .booking-route .arrow {
+      color: #888;
+      font-weight: normal;
+      margin: 0 6px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .status-badge.confirmed {
+      background: #eafaf1;
+      color: #1a6e3c;
+      border: 1px solid #a9dfbf;
+    }
+
+    .status-badge.cancelled {
+      background: #fdf2f2;
+      color: #c0392b;
+      border: 1px solid #f5c6c6;
+    }
+
+    .booking-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .detail-pill {
+      background: #f0f0f0;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: #444;
+    }
+
+    .booking-card-footer {
+      padding: 12px 24px;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-top: 1px solid #eee;
+    }
+
+    .booked-date {
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    .cancel-btn {
+      padding: 6px 16px;
+      background: white;
+      color: #c0392b;
+      border: 1px solid #c0392b;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: Arial, Helvetica, sans-serif;
+      transition: all 0.2s;
+    }
+
+    .cancel-btn:hover {
+      background: #c0392b;
+      color: white;
+    }
+
+    .cancel-btn:disabled {
+      border-color: #ccc;
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Empty state */
+    .empty-state {
+      background: rgba(255,255,255,0.95);
+      border-radius: 14px;
+      padding: 60px 20px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .empty-icon {
+      font-size: 52px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    /* Back links */
+    .back-links {
+      text-align: center;
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .back-links a {
+      color: white;
+      font-size: 14px;
+      text-decoration: underline;
+      opacity: 0.85;
+    }
+
+    .back-links a:hover {
+      opacity: 1;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 14px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 999;
+    }
+
+    .toast.show { opacity: 1; }
+    .toast.cancelled { background: #c0392b; }
+    .toast.cleared { background: #555; }
+
+    /* Dark mode */
+    body.dark .booking-card {
+      background: #2a2a2a;
+    }
+
+    body.dark .booking-route .route-text {
+      color: #eee;
+    }
+
+    body.dark .detail-pill {
+      background: #3a3a3a;
+      color: #ccc;
+    }
+
+    body.dark .booking-card-footer {
+      background: #222;
+      border-top-color: #444;
+    }
+
+    body.dark .booked-date {
+      color: #777;
+    }
+
+    body.dark .empty-state {
+      background: #2a2a2a;
+    }
+
+    body.dark .empty-state h3 {
+      color: #eee;
+    }
+
+    body.dark .empty-state p {
+      color: #aaa;
+    }
+
+    body.dark .cancel-btn {
+      background: #2a2a2a;
+    }
+
+    body.dark .status-badge.confirmed {
+      background: #1a2e22;
+      color: #7dcea0;
+      border-color: #2e6e45;
+    }
+
+    body.dark .status-badge.cancelled {
+      background: #2a1a1a;
+      color: #f08080;
+      border-color: #7a3333;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .bookings-heading h2 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SAME HEADER AS REST OF SITE -->
+  <header class="headers">
+    <h1>Bohol Rides</h1>
+    <nav>
+      <ul class="upper-page">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="booking.html">Book a Ride</a></li>
+        <li><a href="places.html">Find Places</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="bookings-wrapper">
+    <div class="bookings-container">
+
+      <div class="bookings-heading">
+        <h2>📋 My Bookings</h2>
+        <p>All your Bohol Rides reservations in one place.</p>
+      </div>
+
+      <div id="bookingsContent"></div>
+
+      <div class="back-links">
+        <a href="index.html">← Home</a>
+        <a href="booking.html">+ Book a New Ride</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+  <script>
+    function showToast(message, type) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "toast " + type + " show";
+      setTimeout(function () { toast.classList.remove("show"); }, 3000);
+    }
+
+    function cancelBooking(id) {
+      if (!confirm("Cancel this booking?")) return;
+      const bookings = JSON.parse(localStorage.getItem("myBookings") || "[]");
+      const updated = bookings.map(function (b) {
+        if (b.id === id) b.status = "Cancelled";
+        return b;
+      });
+      localStorage.setItem("myBookings", JSON.stringify(updated));
+      showToast("❌ Booking cancelled.", "cancelled");
+      renderBookings();
+    }
+
+    function clearAll() {
+      if (!confirm("Remove all bookings? This cannot be undone.")) return;
+      localStorage.removeItem("myBookings");
+      showToast("🗑️ All bookings cleared.", "cleared");
+      renderBookings();
+    }
+
+    function getVehicleIcon(type) {
+      const icons = { Motorcycle: "🏍️", Tricycle: "🛺", Van: "🚐", Bus: "🚌" };
+      return icons[type] || "🚗";
+    }
+
+    function renderBookings() {
+      const container = document.getElementById("bookingsContent");
+      const bookings = JSON.parse(localStorage.getItem("myBookings") || "[]");
+
+      if (bookings.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3>No bookings yet</h3>
+            <p>You haven't booked any rides yet. Start exploring Bohol!</p>
+            <a href="booking.html" class="cta-button">🚗 Book a Ride</a>
+          </div>
+        `;
+        return;
+      }
+
+      const sorted = bookings.slice().reverse();
+
+      let html = `
+        <div class="top-row">
+          <span class="count-label">${bookings.length} booking${bookings.length > 1 ? "s" : ""} total</span>
+          <div class="top-row-actions">
+            <button class="clear-all-btn" onclick="clearAll()">🗑️ Clear All</button>
+          </div>
+        </div>
+        <div class="bookings-list">
+      `;
+
+      sorted.forEach(function (booking) {
+        const isCancelled = booking.status === "Cancelled";
+        const icon = getVehicleIcon(booking.vehicleType);
+
+        const dateObj = new Date(booking.rideDate + "T" + booking.rideTime);
+        const formattedDate = dateObj.toLocaleDateString("en-PH", {
+          weekday: "short", year: "numeric", month: "short", day: "numeric"
+        });
+        const formattedTime = dateObj.toLocaleTimeString("en-PH", {
+          hour: "2-digit", minute: "2-digit"
+        });
+
+        html += `
+          <div class="booking-card status-${isCancelled ? "cancelled" : "confirmed"}">
+            <div class="booking-card-body">
+              <div class="booking-route">
+                <div class="route-text">
+                  ${booking.pickupLocation}
+                  <span class="arrow">→</span>
+                  ${booking.destination}
+                </div>
+                <span class="status-badge ${isCancelled ? "cancelled" : "confirmed"}">
+                  ${booking.status}
+                </span>
+              </div>
+              <div class="booking-details">
+                <span class="detail-pill">${icon} ${booking.vehicleType}</span>
+                <span class="detail-pill">📅 ${formattedDate}</span>
+                <span class="detail-pill">🕐 ${formattedTime}</span>
+                <span class="detail-pill">👤 ${booking.fullName}</span>
+                <span class="detail-pill">👥 ${booking.numPassengers} pax</span>
+                <span class="detail-pill">📞 ${booking.contactNumber}</span>
+              </div>
+            </div>
+            <div class="booking-card-footer">
+              <span class="booked-date">Booked: ${booking.bookedAt}</span>
+              <button
+                class="cancel-btn"
+                onclick="cancelBooking(${booking.id})"
+                ${isCancelled ? "disabled" : ""}
+              >${isCancelled ? "Cancelled" : "❌ Cancel"}</button>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    renderBookings();
+  </script>
+</body>
+</html>

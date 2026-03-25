@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Places | Bohol Rides</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* SEARCH BAR */
+    .places-search {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .places-search input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      min-width: 180px;
+      box-sizing: border-box;
+    }
+
+    .places-search button {
+      padding: 12px 24px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .places-search button:hover {
+      background: #000;
+    }
+
+    /* LOADING */
+    .places-loading {
+      text-align: center;
+      padding: 30px;
+      color: #888;
+      display: none;
+      font-size: 15px;
+    }
+
+    .places-loading.visible {
+      display: block;
+    }
+
+    /* ERROR */
+    .places-error {
+      background: #fff3f3;
+      border: 1px solid #f5c6c6;
+      color: #c0392b;
+      padding: 16px 20px;
+      border-radius: 10px;
+      display: none;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .places-error.visible {
+      display: block;
+    }
+
+    /* RESULTS COUNT */
+    .results-count {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .results-count.visible {
+      display: block;
+    }
+
+    /* PLACE CARDS */
+    .places-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .place-card {
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+      border-left: 5px solid #333;
+    }
+
+    .place-card:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .place-name {
+      font-size: 17px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 6px;
+    }
+
+    .place-type-badge {
+      display: inline-block;
+      background: #333;
+      color: white;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      text-transform: capitalize;
+    }
+
+    .place-address {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .place-map-link {
+      display: inline-block;
+      padding: 8px 18px;
+      background: #1a6e3c;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .place-map-link:hover {
+      background: #145530;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: #888;
+      display: none;
+    }
+
+    .empty-state.visible {
+      display: block;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 14px;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 14px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .toast.success {
+      background: #1a6e3c;
+    }
+
+    .toast.duplicate {
+      background: #c07000;
+    }
+
+    /* DARK MODE */
+    body.dark .places-search input {
+      background: #222;
+      color: #eee;
+      border-color: #444;
+    }
+
+    body.dark .place-card {
+      background: #2a2a2a;
+      border-left-color: #aaa;
+    }
+
+    body.dark .place-name {
+      color: #eee;
+    }
+
+    body.dark .place-address {
+      color: #bbb;
+    }
+
+    body.dark .place-type-badge {
+      background: #555;
+    }
+
+    body.dark .places-error {
+      background: #2a1a1a;
+      color: #f08080;
+      border-color: #7a3333;
+    }
+
+    body.dark .results-count {
+      color: #aaa;
+    }
+
+    body.dark .empty-state {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header class="headers">
+    <h1>Bohol Rides</h1>
+  </header>
+
+  <section class="page-content">
+    <div class="dashboard">
+
+      <aside class="sidebar">
+        <h3>Navigation</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="places.html" class="active">📍 Find Places</a></li>
+          <li><a href="saved-places.html">⭐ Saved Places</a></li>
+          <li><a href="settings.html">Settings</a></li>
+          <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </aside>
+
+      <main class="dashboard-content">
+        <h2>📍 Find Places in Bohol</h2>
+        <p style="color:#666; margin-bottom:20px; font-size:14px;">
+          Search for tourist spots, roads, landmarks, and destinations across Bohol.
+        </p>
+
+        <!-- Search -->
+        <div class="places-search">
+          <input
+            type="text"
+            id="placeInput"
+            placeholder="e.g. Chocolate Hills, Panglao, Loboc River"
+            autocomplete="off"
+          />
+          <button onclick="searchPlaces()">Search</button>
+        </div>
+
+        <!-- Loading -->
+        <div class="places-loading" id="loadingMsg">
+          ⏳ Searching for places...
+        </div>
+
+        <!-- Error -->
+        <div class="places-error" id="errorMsg"></div>
+
+        <!-- Results count -->
+        <div class="results-count" id="resultsCount"></div>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">🗺️</div>
+          <p>No places found for that search.<br />Try a different keyword.</p>
+        </div>
+
+        <!-- Place cards -->
+        <div class="places-list" id="placesList"></div>
+
+      </main>
+    </div>
+  </section>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+  <script>
+    // Apply dark mode on load
+    if (localStorage.getItem("darkMode") === "true") {
+      document.body.classList.add("dark");
+    }
+
+    // Allow pressing Enter to search
+    document.getElementById("placeInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") searchPlaces();
+    });
+
+    // Show toast notification
+    function showToast(message, type) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "toast " + type + " show";
+      setTimeout(function () {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    // Show loading state
+    function showLoading() {
+      document.getElementById("loadingMsg").classList.add("visible");
+      document.getElementById("errorMsg").classList.remove("visible");
+      document.getElementById("resultsCount").classList.remove("visible");
+      document.getElementById("emptyState").classList.remove("visible");
+      document.getElementById("placesList").innerHTML = "";
+    }
+
+    // Show error message
+    function showError(message) {
+      document.getElementById("loadingMsg").classList.remove("visible");
+      const err = document.getElementById("errorMsg");
+      err.textContent = "⚠️ " + message;
+      err.classList.add("visible");
+    }
+
+    // Format the place type nicely
+    function formatType(type, category) {
+      if (!type && !category) return "Place";
+      const raw = type || category;
+      // Make it readable: replace underscores, capitalize
+      return raw.replace(/_/g, " ");
+    }
+
+    // Get a color for the border based on place type
+    function getBorderColor(category) {
+      const colors = {
+        tourism:    "#1a6e3c",
+        amenity:    "#1a5a8c",
+        highway:    "#8c6e1a",
+        natural:    "#2e7d32",
+        leisure:    "#6a1a8c",
+        shop:       "#8c1a1a",
+        historic:   "#5c4a1a",
+        building:   "#4a4a4a",
+      };
+      return colors[category] || "#333";
+    }
+
+    // Main search function
+    async function searchPlaces() {
+      const query = document.getElementById("placeInput").value.trim();
+
+      if (!query) {
+        showError("Please enter a place name to search.");
+        return;
+      }
+
+      showLoading();
+
+      // Nominatim API — free, no key needed
+      // countrycodes=ph limits results to Philippines
+      // bounded + viewbox focuses results around Bohol area
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ", Bohol, Philippines")}&format=json&addressdetails=1&limit=10&countrycodes=ph`;
+
+      try {
+        const response = await fetch(url, {
+          headers: {
+            // Nominatim requires a User-Agent header
+            "Accept-Language": "en"
+          }
+        });
+
+        if (!response.ok) {
+          showError("Search request failed. Please try again.");
+          return;
+        }
+
+        const results = await response.json();
+
+        document.getElementById("loadingMsg").classList.remove("visible");
+
+        if (results.length === 0) {
+          document.getElementById("emptyState").classList.add("visible");
+          return;
+        }
+
+        // Show results count
+        const countEl = document.getElementById("resultsCount");
+        countEl.textContent = `Found ${results.length} result${results.length > 1 ? "s" : ""} for "${query}"`;
+        countEl.classList.add("visible");
+
+        // Render each place as a card
+        const list = document.getElementById("placesList");
+        list.innerHTML = "";
+
+        results.forEach(function (place) {
+          const name = place.display_name.split(",")[0];
+          const fullAddress = place.display_name;
+          const type = formatType(place.type, place.class);
+          const borderColor = getBorderColor(place.class);
+          const lat = place.lat;
+          const lon = place.lon;
+          const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+
+          const card = document.createElement("div");
+          card.className = "place-card";
+          card.style.borderLeftColor = borderColor;
+
+          card.innerHTML = `
+            <div class="place-name">${name}</div>
+            <span class="place-type-badge">${type}</span>
+            <div class="place-address">📍 ${fullAddress}</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <a
+                class="place-map-link"
+                href="${mapsUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                🗺️ Open in Google Maps
+              </a>
+              <button
+                onclick="savePlace('${encodeURIComponent(JSON.stringify({name, fullAddress, type, lat, lon}))}')"
+                style="padding:8px 18px; background:#555; color:white; border:none; border-radius:6px; font-size:13px; cursor:pointer; font-weight:bold;"
+              >
+                ⭐ Save Place
+              </button>
+            </div>
+          `;
+
+          list.appendChild(card);
+        });
+
+      } catch (error) {
+        showError("Network error — please check your internet connection and try again.");
+      }
+    }
+
+    // Save a place to localStorage
+    function savePlace(encodedData) {
+      const placeData = JSON.parse(decodeURIComponent(encodedData));
+
+      // Get existing saved places
+      const existing = JSON.parse(localStorage.getItem("savedPlaces") || "[]");
+
+      // Check for duplicate by place name (case-insensitive)
+      const isDuplicate = existing.some(function (item) {
+        return item.name.toLowerCase() === placeData.name.toLowerCase();
+      });
+
+      if (isDuplicate) {
+        showToast("⚠️ " + placeData.name + " is already saved!", "duplicate");
+        return;
+      }
+
+      // Add saved date
+      placeData.savedAt = new Date().toLocaleString();
+
+      // Save to localStorage
+      existing.push(placeData);
+      localStorage.setItem("savedPlaces", JSON.stringify(existing));
+
+      showToast("✅ " + placeData.name + " saved successfully!", "success");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Saved Places | Bohol Rides</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* SAVED CARDS GRID */
+    .saved-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .saved-place-card {
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 12px;
+      padding: 22px 24px;
+      width: 260px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+      border-left: 5px solid #333;
+      box-sizing: border-box;
+    }
+
+    .saved-place-card:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .saved-place-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 6px;
+    }
+
+    .saved-place-type {
+      display: inline-block;
+      background: #333;
+      color: white;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      text-transform: capitalize;
+    }
+
+    .saved-place-address {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .saved-place-date {
+      font-size: 11px;
+      color: #aaa;
+      margin-bottom: 14px;
+    }
+
+    .saved-place-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .map-btn {
+      display: inline-block;
+      padding: 7px 14px;
+      background: #1a6e3c;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .map-btn:hover {
+      background: #145530;
+    }
+
+    .remove-btn {
+      padding: 7px 14px;
+      background: #c0392b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .remove-btn:hover {
+      background: #a93226;
+    }
+
+    /* CLEAR ALL ROW */
+    .clear-all-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .clear-all-btn {
+      background: #c0392b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .clear-all-btn:hover {
+      background: #a93226;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+    }
+
+    .empty-icon {
+      font-size: 52px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 14px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      color: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .toast.deleted {
+      background: #c0392b;
+    }
+
+    /* DARK MODE */
+    body.dark .saved-place-card {
+      background: #2a2a2a;
+      border-left-color: #aaa;
+    }
+
+    body.dark .saved-place-name {
+      color: #eee;
+    }
+
+    body.dark .saved-place-address {
+      color: #bbb;
+    }
+
+    body.dark .saved-place-type {
+      background: #555;
+    }
+
+    body.dark .saved-place-date {
+      color: #888;
+    }
+
+    body.dark .empty-state {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header class="headers">
+    <h1>Bohol Rides</h1>
+  </header>
+
+  <section class="page-content">
+    <div class="dashboard">
+
+      <aside class="sidebar">
+        <h3>Navigation</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="profile.html">Profile</a></li>
+          <li><a href="places.html">📍 Find Places</a></li>
+          <li><a href="saved-places.html" class="active">⭐ Saved Places</a></li>
+          <li><a href="settings.html">Settings</a></li>
+          <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </aside>
+
+      <main class="dashboard-content">
+        <h2>⭐ Saved Places</h2>
+        <p style="color:#666; margin-bottom:20px; font-size:14px;">
+          Places in Bohol you have saved for your trips.
+        </p>
+
+        <div id="savedContent"></div>
+      </main>
+
+    </div>
+  </section>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+  <script>
+    // Apply dark mode on load
+    if (localStorage.getItem("darkMode") === "true") {
+      document.body.classList.add("dark");
+    }
+
+    function showToast(message, type) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "toast " + type + " show";
+      setTimeout(function () {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    function deletePlace(placeName) {
+      let saved = JSON.parse(localStorage.getItem("savedPlaces") || "[]");
+      saved = saved.filter(function (item) {
+        return item.name.toLowerCase() !== placeName.toLowerCase();
+      });
+      localStorage.setItem("savedPlaces", JSON.stringify(saved));
+      showToast("🗑️ " + placeName + " removed.", "deleted");
+      renderSaved();
+    }
+
+    function clearAll() {
+      if (!confirm("Remove all saved places?")) return;
+      localStorage.removeItem("savedPlaces");
+      showToast("🗑️ All saved places cleared.", "deleted");
+      renderSaved();
+    }
+
+    function renderSaved() {
+      const container = document.getElementById("savedContent");
+      const saved = JSON.parse(localStorage.getItem("savedPlaces") || "[]");
+
+      if (saved.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🗺️</div>
+            <p>No saved places yet.</p>
+            <a href="places.html" class="cta-button">Find Places</a>
+          </div>
+        `;
+        return;
+      }
+
+      let html = `
+        <div class="clear-all-row">
+          <button class="clear-all-btn" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+        <div class="saved-grid">
+      `;
+
+      saved.forEach(function (place) {
+        const mapsUrl = `https://www.google.com/maps?q=${place.lat},${place.lon}`;
+        html += `
+          <div class="saved-place-card">
+            <div class="saved-place-name">${place.name}</div>
+            <span class="saved-place-type">${place.type}</span>
+            <div class="saved-place-address">📍 ${place.fullAddress}</div>
+            <div class="saved-place-date">Saved: ${place.savedAt}</div>
+            <div class="saved-place-actions">
+              <a class="map-btn" href="${mapsUrl}" target="_blank" rel="noopener noreferrer">
+                🗺️ Google Maps
+              </a>
+              <button class="remove-btn" onclick="deletePlace('${place.name.replace(/'/g, "\\'")}')">
+                🗑️ Remove
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    // Render on page load
+    renderSaved();
+  </script>
+</body>
+</html>

@@ -85,8 +85,13 @@ if (document.title.includes("Profile")) {
   }
 }
 
-// PROTECT WEATHER PAGE
-if (document.title.includes("Weather")) {
+// PROTECT PLACES AND BOOKING PAGES
+if (
+  document.title.includes("Find Places") ||
+  document.title.includes("Saved Places") ||
+  document.title.includes("Book a Ride") ||
+  document.title.includes("My Bookings")
+) {
   if (localStorage.getItem("loggedIn") !== "true") {
     window.location.href = "login.html";
   }

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Ride | Bohol Rides</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Booking page uses same background as style.css */
+    /* No sidebar — centered card layout instead */
+
+    .booking-wrapper {
+      padding-top: 120px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 60px;
+    }
+
+    .booking-container {
+      width: 100%;
+      max-width: 700px;
+      padding: 0 20px;
+    }
+
+    .booking-heading {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .booking-heading h2 {
+      color: white;
+      font-size: 32px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      margin-bottom: 6px;
+    }
+
+    .booking-heading p {
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+    }
+
+    /* Main form card — same style as .auth-card */
+    .booking-card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 36px 35px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      box-sizing: border-box;
+    }
+
+    /* Section titles inside card */
+    .section-label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+      margin-top: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .section-label:first-child {
+      margin-top: 0;
+    }
+
+    /* Field rows */
+    .field-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .field-group {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field-group label {
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .field-group input,
+    .field-group select {
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333;
+      background: white;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus {
+      outline: none;
+      border-color: #333;
+    }
+
+    .field-group input::placeholder {
+      color: #aaa;
+    }
+
+    /* Vehicle picker */
+    .vehicle-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .vehicle-tile {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 14px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fafafa;
+      user-select: none;
+    }
+
+    .vehicle-tile:hover {
+      border-color: #333;
+      background: #f0f0f0;
+    }
+
+    .vehicle-tile.selected {
+      border-color: #333;
+      background: #333;
+      color: white;
+    }
+
+    .vehicle-tile .v-icon {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .vehicle-tile .v-name {
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .vehicle-tile .v-cap {
+      font-size: 11px;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    .vehicle-tile.selected .v-cap {
+      opacity: 0.85;
+    }
+
+    /* Success message */
+    .booking-success {
+      background: #eafaf1;
+      border: 1px solid #a9dfbf;
+      color: #1a6e3c;
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .booking-success.visible {
+      display: block;
+    }
+
+    .booking-success a {
+      color: #1a6e3c;
+      font-weight: bold;
+    }
+
+    /* Submit row */
+    .submit-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .submit-row a {
+      font-size: 14px;
+      color: #555;
+      text-decoration: underline;
+    }
+
+    /* Nav back link below card */
+    .back-links {
+      text-align: center;
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .back-links a {
+      color: white;
+      font-size: 14px;
+      text-decoration: underline;
+      opacity: 0.85;
+    }
+
+    .back-links a:hover {
+      opacity: 1;
+    }
+
+    /* Dark mode */
+    body.dark .booking-card {
+      background: #222;
+      color: #eee;
+    }
+
+    body.dark .field-group label {
+      color: #eee;
+    }
+
+    body.dark .field-group input,
+    body.dark .field-group select {
+      background: #2a2a2a;
+      color: #eee;
+      border-color: #555;
+    }
+
+    body.dark .section-label {
+      color: #aaa;
+      border-bottom-color: #444;
+    }
+
+    body.dark .vehicle-tile {
+      background: #2a2a2a;
+      border-color: #555;
+      color: #eee;
+    }
+
+    body.dark .vehicle-tile:hover {
+      border-color: #eee;
+      background: #333;
+    }
+
+    body.dark .vehicle-tile.selected {
+      background: #eee;
+      color: #111;
+      border-color: #eee;
+    }
+
+    body.dark .submit-row {
+      border-top-color: #444;
+    }
+
+    body.dark .submit-row a {
+      color: #ccc;
+    }
+
+    body.dark .booking-success {
+      background: #1a2e22;
+      border-color: #2e6e45;
+      color: #7dcea0;
+    }
+
+    body.dark .booking-success a {
+      color: #7dcea0;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .vehicle-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .booking-heading h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SAME HEADER AS REST OF SITE -->
+  <header class="headers">
+    <h1>Bohol Rides</h1>
+    <nav>
+      <ul class="upper-page">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="my-bookings.html">My Bookings</a></li>
+        <li><a href="places.html">Find Places</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- BOOKING CONTENT -->
+  <div class="booking-wrapper">
+    <div class="booking-container">
+
+      <div class="booking-heading">
+        <h2>🚗 Book a Ride</h2>
+        <p>Fill in the details below to book your ride around Bohol.</p>
+      </div>
+
+      <div class="booking-card">
+
+        <!-- Success message -->
+        <div class="booking-success" id="bookingSuccess">
+          ✅ Your booking has been submitted successfully!
+          <a href="my-bookings.html">View My Bookings →</a>
+        </div>
+
+        <form id="bookingForm">
+
+          <!-- PASSENGER DETAILS -->
+          <div class="section-label">Passenger Details</div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" placeholder="e.g. Juan Dela Cruz" />
+            </div>
+            <div class="field-group">
+              <label for="contactNumber">Contact Number</label>
+              <input type="tel" id="contactNumber" placeholder="e.g. 09171234567" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="numPassengers">Number of Passengers</label>
+              <select id="numPassengers">
+                <option value="" disabled selected>Select passengers</option>
+                <option value="1">1 passenger</option>
+                <option value="2">2 passengers</option>
+                <option value="3">3 passengers</option>
+                <option value="4">4 passengers</option>
+                <option value="5">5 passengers</option>
+                <option value="6+">6 or more</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TRIP DETAILS -->
+          <div class="section-label">Trip Details</div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="pickupLocation">Pickup Location</label>
+              <input type="text" id="pickupLocation" placeholder="e.g. Tagbilaran City Hall" />
+            </div>
+            <div class="field-group">
+              <label for="destination">Destination</label>
+              <input type="text" id="destination" placeholder="e.g. Chocolate Hills, Carmen" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="rideDate">Date</label>
+              <input type="date" id="rideDate" />
+            </div>
+            <div class="field-group">
+              <label for="rideTime">Time</label>
+              <input type="time" id="rideTime" />
+            </div>
+          </div>
+
+          <!-- VEHICLE TYPE -->
+          <div class="section-label">Choose Your Vehicle</div>
+
+          <div class="vehicle-grid">
+            <div class="vehicle-tile" data-value="Motorcycle" onclick="selectVehicle(this)">
+              <span class="v-icon">🏍️</span>
+              <div class="v-name">Motorcycle</div>
+              <div class="v-cap">1 passenger</div>
+            </div>
+            <div class="vehicle-tile" data-value="Tricycle" onclick="selectVehicle(this)">
+              <span class="v-icon">🛺</span>
+              <div class="v-name">Tricycle</div>
+              <div class="v-cap">Up to 3</div>
+            </div>
+            <div class="vehicle-tile" data-value="Van" onclick="selectVehicle(this)">
+              <span class="v-icon">🚐</span>
+              <div class="v-name">Van</div>
+              <div class="v-cap">Up to 8</div>
+            </div>
+            <div class="vehicle-tile" data-value="Bus" onclick="selectVehicle(this)">
+              <span class="v-icon">🚌</span>
+              <div class="v-name">Bus</div>
+              <div class="v-cap">Group tours</div>
+            </div>
+          </div>
+
+          <input type="hidden" id="vehicleType" />
+
+          <!-- SUBMIT -->
+          <div class="submit-row">
+            <button type="submit" class="cta-button">Confirm Booking</button>
+            <a href="my-bookings.html">📋 View My Bookings</a>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Back links -->
+      <div class="back-links">
+        <a href="index.html">← Home</a>
+        <a href="profile.html">← Profile</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Set minimum date to today
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("rideDate").setAttribute("min", today);
+
+    // Vehicle selection
+    function selectVehicle(el) {
+      document.querySelectorAll(".vehicle-tile").forEach(function (tile) {
+        tile.classList.remove("selected");
+      });
+      el.classList.add("selected");
+      document.getElementById("vehicleType").value = el.getAttribute("data-value");
+    }
+
+    // Form submit
+    document.getElementById("bookingForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const fullName       = document.getElementById("fullName").value.trim();
+      const contactNumber  = document.getElementById("contactNumber").value.trim();
+      const numPassengers  = document.getElementById("numPassengers").value;
+      const pickupLocation = document.getElementById("pickupLocation").value.trim();
+      const destination    = document.getElementById("destination").value.trim();
+      const rideDate       = document.getElementById("rideDate").value;
+      const rideTime       = document.getElementById("rideTime").value;
+      const vehicleType    = document.getElementById("vehicleType").value;
+
+      if (!fullName || !contactNumber || !numPassengers || !pickupLocation || !destination || !rideDate || !rideTime) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (!vehicleType) {
+        alert("Please select a vehicle type.");
+        return;
+      }
+
+      // Build and save booking
+      const booking = {
+        id: Date.now(),
+        fullName,
+        contactNumber,
+        numPassengers,
+        pickupLocation,
+        destination,
+        rideDate,
+        rideTime,
+        vehicleType,
+        status: "Confirmed",
+        bookedAt: new Date().toLocaleString()
+      };
+
+      const existing = JSON.parse(localStorage.getItem("myBookings") || "[]");
+      existing.push(booking);
+      localStorage.setItem("myBookings", JSON.stringify(existing));
+
+      // Show success
+      document.getElementById("bookingSuccess").classList.add("visible");
+
+      // Reset form
+      this.reset();
+      document.getElementById("vehicleType").value = "";
+      document.querySelectorAll(".vehicle-tile").forEach(function (tile) {
+        tile.classList.remove("selected");
+      });
+
+      document.getElementById("bookingSuccess").scrollIntoView({ behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>
